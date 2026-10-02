@@ -46,17 +46,37 @@ public abstract class Personaje implements Combatiente {
     }  
     
     public void recibirDanio(int danio) {
-        puntosVida -= danio;
-        if (puntosVida < 0) {
-            puntosVida = 0;
-        }
-        estaVivo = puntosVida > 0;
+    if (danio == 0) {
+        return;
+    }
+
+    puntosVida -= danio;
+
+    if (puntosVida <= 0) {
+        puntosVida = 0;
+        estaVivo = false;
+    } else {
+        estaVivo = true;
+    }
+
+    if (danio > 0) {
+        System.out.println(nombre + " recibe " + danio +
+                           " de daño. Vida: " + puntosVida);
+    } else {
+        System.out.println(nombre + " recibe una curación de " + (-danio) +
+                           ". Vida: " + puntosVida);
+    }
+
+    if (!estaVivo) {
+        System.out.println(nombre + " ha sido derrotado.");
+    }
 }
     /* 
     public int calcularDanio() {
         return getNivel() * 10; 
     }
 */
+    @Override
     public abstract void atacar();
     public abstract int calcularDanio();
 /* 

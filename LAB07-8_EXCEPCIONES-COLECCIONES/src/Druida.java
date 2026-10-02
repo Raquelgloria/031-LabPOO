@@ -16,6 +16,15 @@ public class Druida extends Personaje implements Sanador, Hechicero {
 
     @Override
     public void atacar() {
+        if (!isEstaVivo()) {
+            throw new PersonajeDerrotadoException(getNombre());
+        }
+
+        if (mana < 10) {
+            throw new RecursoInsuficienteException("mana", mana);
+        }
+
+        mana -= 10;
         System.out.println(getNombre() + " ataca con fuerzas de la naturaleza, causando " + calcularDanio() + " puntos de daño.");
     }
 
@@ -40,9 +49,16 @@ public class Druida extends Personaje implements Sanador, Hechicero {
 
     @Override
     public void curarAliado(Personaje aliado) {
-        if (aliado != null) {
-            aliado.recibirDanio(-poderCuracion);
+        if (aliado == null) {
+            throw new PersonajeNuloException("curarAliado");
         }
+
+        if (!aliado.isEstaVivo()) {
+            throw new AccionInvalidaException("curarAliado", "No se puede curar a un personaje derrotado");
+        }
+
+        aliado.recibirDanio(-poderCuracion);
+        System.out.println(getNombre() + " cura a " + aliado.getNombre() + " por " + poderCuracion + " puntos de vida.");
     }
 
     public int getPoderCuracion() {

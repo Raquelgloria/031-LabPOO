@@ -1,11 +1,13 @@
 public class Arquero extends Personaje {
-    private int precision;
-    private String tipoArco;
+    private final int precision;
+    private final String tipoArco;
+    private int flechasDisponibles;
 
     public Arquero(String nombre, int nivel, int puntosVida, int precision, String tipoArco) {
         super(nombre, nivel, puntosVida);
         this.precision = precision;
         this.tipoArco = tipoArco;
+        this.flechasDisponibles = 20;
     }
 
     public int getPrecision() {
@@ -16,6 +18,10 @@ public class Arquero extends Personaje {
         return tipoArco;
     }
 
+    public int getFlechasDisponibles() {
+        return flechasDisponibles;
+    }
+
     @Override
     public int calcularDanio() {
         return precision * getNivel() * 10; // Ejemplo: daño aumentado para el arquero
@@ -23,7 +29,18 @@ public class Arquero extends Personaje {
 
     @Override
     public void atacar() {
-        System.out.println(getNombre() + " dispara una flecha con su " + tipoArco + ", causando " + precision + " puntos de daño.");
+
+        if (!isEstaVivo()) {
+            throw new PersonajeDerrotadoException(getNombre());
+        }
+
+        if (flechasDisponibles <= 0) {
+            throw new RecursoInsuficienteException("flechas", flechasDisponibles);
+        }
+
+        flechasDisponibles--;
+        System.out.println("[" + getNombre() + "] dispara una flecha. " +
+                           "Flechas restantes: " + flechasDisponibles);
     }
 
     @Override

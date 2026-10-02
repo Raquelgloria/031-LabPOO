@@ -4,10 +4,10 @@ import java.util.Map;
 
 public class GestionGremio {
 
-    private ArrayList<Personaje> roster;
-    private java.util.LinkedList<String> colaTurnos;
-    private java.util.HashMap<String, Integer> inventario;
-    private java.util.HashSet<String> habilidades;
+    private final ArrayList<Personaje> roster;
+    private final java.util.LinkedList<String> colaTurnos;
+    private final java.util.HashMap<String, Integer> inventario;
+    private final java.util.HashSet<String> habilidades;
 
     public GestionGremio() {
         roster      = new ArrayList<>();

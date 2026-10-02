@@ -16,6 +16,15 @@ public class Nigromante extends Personaje implements Hechicero {
 
 	@Override
 	public void atacar() {
+		if (!isEstaVivo()) {
+			throw new PersonajeDerrotadoException(getNombre());
+		}
+
+		if (mana < 15) {
+			throw new RecursoInsuficienteException("mana", mana);
+		}
+
+		mana -= 15;
 		System.out.println(getNombre() + " drena la vida de su enemigo e invoca no-muertos, causando " + calcularDanio() + " puntos de daño.");
 	}
 

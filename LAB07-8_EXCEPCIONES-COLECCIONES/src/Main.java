@@ -1,6 +1,6 @@
 /*RAQUEL GUADALUPE GLORIA VAZQUEZ   #2011258
 LABORATORIO DE PROGRAMACIÓN ORIENTADA A OBJETOS  GPO 031
-PRACTICA 8 COLECCIONES */
+PRACTICA 7-8 EXCEPCIONES /COLECCIONES */
 
 
 public class Main {
@@ -36,6 +36,38 @@ public class Main {
         bardo.curarAliado(nigromante);
         System.out.println("Vida despues de la curacion del Bardo: " + nigromante.getPuntosVida());
 
+        //de la parctica 7 excepciones
+        MotorCombate motor = new MotorCombate();
+        motor.ejecutarTurno(druida, nigromante);
+
+        druida.recibirDanio(9999);
+        motor.ejecutarTurno(druida, nigromante);  // captura PersonajeDerrotadoException
+
+        Arquero sinFlechas = new Arquero("Legolas", 6, 150, 0, "Arco Largo");
+        motor.ejecutarTurno(sinFlechas, nigromante);  // captura RecursoInsuficienteException
+
+        Druida druida2 = new Druida("Druida 2", 5, 100, 20, 10);
+        Personaje personajeDerrotado = new Guerrero("Guerrero Caido", 3, 10, 5, "Escudo");
+        personajeDerrotado.recibirDanio(20);
+
+        try {
+            druida2.curarAliado(personajeDerrotado);
+        } catch (RpgException e) {
+            System.out.println("No se pudo curar: " + e.getMessage());
+        }
+
+        try {
+            nigromante.recibirDanio(-50);
+        } catch (AccionInvalidaException e) {
+            System.out.println("Capturado: " + e.getMessage());
+        } finally {
+            System.out.println("El bloque finally siempre se ejecuta.");
+        }
+
+        motor.mostrarBitacora();
+
+
+        //practica 8 colecciones
         // bloque 1
         GestionGremio gremio = new GestionGremio();
         gremio.agregarMiembro(new Druida("Sylva", 10, 300, 100, 30));

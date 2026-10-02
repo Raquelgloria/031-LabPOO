@@ -3,7 +3,7 @@ import java.util.ArrayList;
 
 public class GestorBatalla {
 
-    private ArrayList<String> historial = new ArrayList<>();
+    private final ArrayList<String> historial = new ArrayList<>();
 
     // Versión 1: un solo atacante
     public void ejecutarAtaque(Personaje atacante) {

@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         // Personaje personaje = new Personaje("Personaje", 1, 100);
         // Error de compilacion: Personaje es una clase abstracta.
 
@@ -176,14 +176,91 @@ public class Main {
        /*BLOQUE 5 */
        File carpeta = new File("datos_gremio");
        System.out.println("\n=== Archivos en datos_gremio/ ===");
-       for (File f : carpeta.listFiles()) {
-        System.out.println(f.getName() +
-        " (" + f.length() + " bytes)");
+       File[] archivos = carpeta.listFiles();
+       if (archivos == null) {
+           System.out.println("No se pudo leer la carpeta datos_gremio.");
+       } else {
+           for (File f : archivos) {
+               System.out.println(f.getName() +
+                       " (" + f.length() + " bytes)");
+           }
        }
     
         } catch (IOException e) {
             System.out.println("Error de archivo: " + e.getMessage());
         }
+
+    // CONTINUACION PRACTICA 10 PROGRAMACION CONCURRENTE
+    //BLOQUE 1: MONITOR DE TORNEO
+    TablaResultados tabla = new TablaResultados();
+
+    Personaje s1 = new Druida("Sylva", 10, 300, 100, 30);
+    Personaje m1 = new Nigromante("Malachar", 8, 150, 120, 10);
+    Personaje l1 = new Arquero("Legolas", 6, 200, 95, "Arco");
+    Personaje t1 = new Guerrero("Thorin", 9, 400, 80, "Hacha");
+    Personaje b1 = new Druida("Brego", 7, 250, 80, 25);
+    Personaje k1 = new Nigromante("Kael", 5, 180, 90, 5);
+
+    // Crear los Runnable
+    CombateConcurrente c1 = new CombateConcurrente("Campo-1", s1, m1, tabla);
+    CombateConcurrente c2 = new CombateConcurrente("Campo-2", l1, t1, tabla);
+    CombateConcurrente c3 = new CombateConcurrente("Campo-3", b1, k1, tabla);
+
+    // Envolver en Thread e iniciar
+    Thread h1 = new Thread(c1);
+    Thread h2 = new Thread(c2);
+    Thread h3 = new Thread(c3);
+
+    h1.start();
+    h2.start();
+    h3.start();
+
+    //BLOQUE 2
+    MonitorTorneo monitor = new MonitorTorneo("Torneo Principal", 3);
+    monitor.start();
+
+
+    //BLOQUE 3
+    try {
+    h1.join();   // espera a que Campo-1 termine
+    h2.join();   // espera a que Campo-2 termine
+    h3.join();   // espera a que Campo-3 termine
+    monitor.join();
+    } catch (InterruptedException e) {
+        System.out.println("Espera interrumpida.");
+        Thread.currentThread().interrupt();
+        return;
     }
 
+    System.out.println("\nTodos los combates han terminado.");
+    tabla.mostrarResultados();
+
+    //BLOQUE 4
+    ContadorCompartido contador = new ContadorCompartido();
+
+// Sin synchronized — resultado incorrecto
+    Thread[] hilos = new Thread[5];
+    for (int i = 0; i < 5; i++) {
+        hilos[i] = new Thread(() -> {
+            for (int j = 0; j < 1000; j++) contador.incrementar();
+    });
+    hilos[i].start();
+    }
+    for (Thread t : hilos) t.join();
+    System.out.println("Sin sync  — esperado: 5000 | real: " +
+                   contador.getContador());
+
+// Con synchronized — resultado correcto
+    contador.resetear();
+    for (int i = 0; i < 5; i++) {
+        hilos[i] = new Thread(() -> {
+            for (int j = 0; j < 1000; j++) contador.incrementarSeguro();
+    });
+    hilos[i].start();
+    }
+    for (Thread t : hilos) t.join();
+    System.out.println("Con sync  — esperado: 5000 | real: " +
+                   contador.getContador());
+
+}
 }

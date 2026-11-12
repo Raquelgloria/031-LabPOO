@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - AUTO RUN</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f1f5f9;
+            color: #1e293b;
+            padding: 30px;
+        }
+
+        header {
+            background: #172554;
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            letter-spacing: 2px;
+        }
+
+        header p {
+            margin-top: 8px;
+            color: #bfdbfe;
+        }
+
+        .contenedor {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .encabezado {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 15px;
+        }
+
+        .boton {
+            background: #1d4ed8;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 7px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .boton:hover {
+            background: #1e40af;
+        }
+
+        .tabla-contenedor {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            box-shadow: 0 3px 12px #00000010;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th {
+            background: #172554;
+            color: white;
+            padding: 15px;
+        }
+
+        td {
+            padding: 14px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+        }
+
+        .estado {
+            background: #dcfce7;
+            color: #166534;
+            padding: 6px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+        }
+
+        .editar {
+            background: #f59e0b;
+            color: white;
+            padding: 7px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .eliminar {
+            background: #dc2626;
+            color: white;
+            padding: 7px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .regresar {
+            display: inline-block;
+            margin-top: 25px;
+            color: #1d4ed8;
+            text-decoration: none;
+        }
+
+        @media(max-width: 600px) {
+            body {
+                padding: 12px;
+            }
+
+            .encabezado {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="contenedor">
+
+    <header>
+        <h1>AUTO RUN</h1>
+        <p>Administración de inventario de vehículos</p>
+    </header>
+
+    <div class="encabezado">
+        <h2>Inventario de vehículos</h2>
+
+        <a th:href="@{/vehiculos/nuevo}" class="boton">
+            + Agregar vehículo
+        </a>
+    </div>
+
+    <div class="tabla-contenedor">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Año</th>
+                    <th>Color</th>
+                    <th>Precio</th>
+                    <th>Kilometraje</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                <tr th:each="v : ${vehiculos}">
+
+                    <td th:text="${v.id}"></td>
+                    <td th:text="${v.marca}"></td>
+                    <td th:text="${v.modelo}"></td>
+                    <td th:text="${v.anio}"></td>
+                    <td th:text="${v.color}"></td>
+
+                    <td th:text="${'$' + #numbers.formatDecimal(v.precio, 1, 2)}"></td>
+
+                    <td th:text="${v.kilometraje + ' km'}"></td>
+
+                    <td>
+                        <span class="estado"
+                              th:text="${v.estado}">
+                        </span>
+                    </td>
+
+                    <td>
+                        <a th:href="@{/vehiculos/editar/{id}(id=${v.id})}"
+                           class="editar">
+                            Editar
+                        </a>
+
+                        <a th:href="@{/vehiculos/eliminar/{id}(id=${v.id})}"
+                           class="eliminar"
+                           onclick="return confirm('¿Deseas eliminar este vehículo?')">
+                            Eliminar
+                        </a>
+                    </td>
+
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(vehiculos)}">
+                    <td colspan="9">
+                        No hay vehículos registrados.
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </div>
+
+    
+
+</div>
+
+</body>
+</html>
